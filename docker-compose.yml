@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  shadow:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./shadow.js:/etc/nginx/shadow.js:ro
+    command: [nginx-debug, '-g', 'daemon off;']
+    ports:
+      - 80:80
+  service_one:
+    image: node:12
+    volumes: 
+      - .:/app
+    working_dir: /app
+    command: node ./service.js
+    environment: 
+      - APP_NAME=one
+      - PORT=3001
+      - PAYLOAD=PayloadOne
+    ports:
+      - 3001:3001
+  service_two:
+    image: node:12
+    volumes: 
+      - .:/app
+    working_dir: /app
+    environment: 
+      - APP_NAME=two
+      - PORT=3002
+      - PAYLOAD=PayloadTwo
+    command: node ./service.js
+    ports:
+      - 3002:3002
